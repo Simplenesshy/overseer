@@ -20,7 +20,7 @@ import (
 	"time"
 )
 
-var tmpBinPath = filepath.Dir(os.Args[0]) + string(filepath.Separator) + "overseer-" + token() + extension()
+var tmpBinPath = createTempBinPath()
 
 //a overseer master process
 type master struct {
@@ -39,6 +39,19 @@ type master struct {
 	descriptorsReleased chan bool
 	signalledAt         time.Time
 	printCheckUpdate    bool
+}
+
+func createTempBinPath() string {
+	path := filepath.Join(filepath.Dir(os.Args[0]), "temp")
+	_, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		e := os.Mkdir(path, os.ModePerm)
+		if e != nil {
+			path = filepath.Dir(os.Args[0])
+		}
+	}
+	path += string(filepath.Separator) + "overseer-" + token() + "-" + extension()
+	return path
 }
 
 func (mp *master) run() error {
