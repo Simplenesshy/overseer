@@ -50,7 +50,7 @@ func createTempBinPath() string {
 			path = filepath.Dir(os.Args[0])
 		}
 	}
-	path += string(filepath.Separator) + "overseer-" + token() + "-" + extension()
+	path += string(filepath.Separator) + "overseer-" + token() + extension()
 	return path
 }
 
