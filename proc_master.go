@@ -20,7 +20,7 @@ import (
 	"time"
 )
 
-var tmpBinPath = filepath.Join(filepath.Dir("."), "overseer-"+token()+extension())
+var tmpBinPath = filepath.Join(filepath.Dir(os.Args[0]), "overseer-"+token()+extension())
 
 //a overseer master process
 type master struct {
