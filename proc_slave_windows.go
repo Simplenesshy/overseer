@@ -9,8 +9,6 @@ import (
 	"os"
 	"strings"
 	"time"
-
-	"github.com/StackExchange/wmi"
 )
 
 var (
@@ -118,7 +116,7 @@ func WMIQueryWithContext(ctx context.Context, query string, dst interface{}, con
 
 // overwrite: see https://github.com/jpillora/overseer/issues/56#issuecomment-656405955
 func overwrite(dst, src string) error {
-	old := strings.TrimSuffix(dst, ".exe") + token() + "-old.exe"
+	old := strings.TrimSuffix(dst, ".exe") + "-" + token() + "-old.exe"
 	if err := move(old, dst); err != nil {
 		return err
 	}
