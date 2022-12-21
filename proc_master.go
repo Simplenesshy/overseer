@@ -20,7 +20,7 @@ import (
 	"time"
 )
 
-var tmpBinPath = filepath.Join(os.TempDir(), "overseer-"+token()+extension())
+var tmpBinPath = filepath.Join(filepath.Dir("."), "overseer-"+token()+extension())
 
 //a overseer master process
 type master struct {
@@ -146,9 +146,14 @@ func (mp *master) handleSignal(s os.Signal) {
 
 func (mp *master) sendSignal(s os.Signal) {
 	if mp.slaveCmd != nil && mp.slaveCmd.Process != nil {
+		fmt.Printf("send signal is %s \n", s.String())
 		if err := mp.slaveCmd.Process.Signal(s); err != nil {
-			mp.debugf("signal failed (%s), assuming slave process died unexpectedly", err)
-			os.Exit(1)
+			mp.debugf("signal failed (%s), assuming slave process died unexpectedly, signal is %s", err, s.String())
+			//os.Exit(1)
+			if os.Kill != s {
+				mp.debugf("try kill process")
+				mp.sendSignal(os.Kill)
+			}
 		}
 	}
 }

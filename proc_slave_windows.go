@@ -1,3 +1,4 @@
+//go:build windows
 // +build windows
 
 package overseer
@@ -117,13 +118,16 @@ func WMIQueryWithContext(ctx context.Context, query string, dst interface{}, con
 
 // overwrite: see https://github.com/jpillora/overseer/issues/56#issuecomment-656405955
 func overwrite(dst, src string) error {
-	old := strings.TrimSuffix(dst, ".exe") + "-old.exe"
+	old := strings.TrimSuffix(dst, ".exe") + token() + "-old.exe"
 	if err := move(old, dst); err != nil {
 		return err
 	}
 	if err := move(dst, src); err != nil {
 		return err
 	}
-	os.Remove(old)
+	e := os.Remove(old)
+	if e != nil {
+		fmt.Printf("remove old file fail %s \n", e)
+	}
 	return nil
 }
